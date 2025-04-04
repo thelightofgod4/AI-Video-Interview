@@ -143,20 +143,20 @@ function DetailsPopup({
   return (
     <>
       <div className="text-center w-[38rem]">
-        <h1 className="text-xl font-semibold">Create an Interview</h1>
+        <h1 className="text-xl font-semibold">Görüşme Oluştur</h1>
         <div className="flex flex-col justify-center items-start mt-4 ml-10 mr-8">
           <div className="flex flex-row justify-center items-center">
-            <h3 className="text-sm font-medium">Interview Name:</h3>
+            <h3 className="text-sm font-medium">Görüşme Adı:</h3>
             <input
               type="text"
               className="border-b-2 focus:outline-none border-gray-500 px-2 w-96 py-0.5 ml-3"
-              placeholder="e.g. Name of the Interview"
+              placeholder="örn. Görüşmenin Adı"
               value={name}
               onChange={(e) => setName(e.target.value)}
               onBlur={(e) => setName(e.target.value.trim())}
             />
           </div>
-          <h3 className="text-sm mt-3 font-medium">Select an Interviewer:</h3>
+          <h3 className="text-sm mt-3 font-medium">Görüşmeci Seçin:</h3>
           <div className="relative flex items-center mt-1">
             <div
               id="slider-3"
@@ -187,7 +187,7 @@ function DetailsPopup({
                   >
                     <Image
                       src={item.image}
-                      alt="Picture of the interviewer"
+                      alt="Görüşmecinin fotoğrafı"
                       width={70}
                       height={70}
                       className="w-full h-full object-cover"
@@ -199,159 +199,121 @@ function DetailsPopup({
                 </div>
               ))}
             </div>
-            {interviewers.length > 4 ? (
-              <div className="flex-row justify-center ml-3 mb-1 items-center space-y-6">
-                <ChevronRight
-                  className="opacity-50 cursor-pointer hover:opacity-100"
-                  size={27}
-                  onClick={() => slideRight("slider-3", 115)}
-                />
+            {interviewers.length > 4 && (
+              <div className="flex flex-row justify-center items-center space-x-3">
                 <ChevronLeft
                   className="opacity-50 cursor-pointer hover:opacity-100"
-                  size={27}
-                  onClick={() => slideLeft("slider-3", 115)}
+                  size={20}
+                  onClick={() => slideLeft("slider-3", 190)}
+                />
+                <ChevronRight
+                  className="opacity-50 cursor-pointer hover:opacity-100"
+                  size={20}
+                  onClick={() => slideRight("slider-3", 190)}
                 />
               </div>
-            ) : (
-              <></>
             )}
           </div>
-          <h3 className="text-sm font-medium">Objective:</h3>
-          <Textarea
-            value={objective}
-            className="h-24 mt-2 border-2 border-gray-500 w-[33.2rem]"
-            placeholder="e.g. Find best candidates based on their technical skills and previous projects."
-            onChange={(e) => setObjective(e.target.value)}
-            onBlur={(e) => setObjective(e.target.value.trim())}
-          />
-          <h3 className="text-sm font-medium mt-2">
-            Upload any documents related to the interview.
-          </h3>
-          <FileUpload
-            isUploaded={isUploaded}
-            setIsUploaded={setIsUploaded}
-            fileName={fileName}
-            setFileName={setFileName}
-            setUploadedDocumentContext={setUploadedDocumentContext}
-          />
-          <label className="flex-col mt-7 w-full">
-            <div className="flex items-center cursor-pointer">
-              <span className="text-sm font-medium">
-                Do you prefer the interviewees&apos; responses to be anonymous?
-              </span>
+          <div className="flex flex-row justify-center items-center mt-3">
+            <h3 className="text-sm font-medium">Amaç:</h3>
+            <Textarea
+              className="border-2 focus:outline-none border-gray-500 px-2 w-96 py-0.5 ml-3 h-24"
+              placeholder="örn. Adayların teknik becerilerini ve önceki projelerini değerlendirin."
+              value={objective}
+              onChange={(e) => setObjective(e.target.value)}
+              onBlur={(e) => setObjective(e.target.value.trim())}
+            />
+          </div>
+          <div className="mt-3">
+            <h3 className="text-sm font-medium mb-1">Görüşmeyle ilgili belgeleri yükleyin:</h3>
+            <FileUpload
+              isUploaded={isUploaded}
+              setIsUploaded={setIsUploaded}
+              fileName={fileName}
+              setFileName={setFileName}
+              setUploadedDocumentContext={setUploadedDocumentContext}
+            />
+          </div>
+          <div className="flex flex-row justify-center items-center mt-3">
+            <h3 className="text-sm font-medium">Yanıtlar anonim olsun mu?</h3>
+            <div className="ml-3">
               <Switch
                 checked={isAnonymous}
-                className={`ml-4 mt-1 ${
-                  isAnonymous ? "bg-indigo-600" : "bg-[#E6E7EB]"
-                }`}
-                onCheckedChange={(checked) => setIsAnonymous(checked)}
+                onCheckedChange={setIsAnonymous}
               />
             </div>
-            <span
-              style={{ fontSize: "0.7rem", lineHeight: "0.66rem" }}
-              className="font-light text-xs italic w-full text-left block"
-            >
-              Note: If not anonymous, the interviewee&apos;s email and name will
-              be collected.
-            </span>
-          </label>
-          <div className="flex flex-row gap-3 justify-between w-full mt-3">
-            <div className="flex flex-row justify-center items-center ">
-              <h3 className="text-sm font-medium ">Number of Questions:</h3>
-              <input
-                type="number"
-                step="1"
-                max="5"
-                min="1"
-                className="border-b-2 text-center focus:outline-none  border-gray-500 w-14 px-2 py-0.5 ml-3"
-                value={numQuestions}
-                onChange={(e) => {
-                  let value = e.target.value;
-                  if (
-                    value === "" ||
-                    (Number.isInteger(Number(value)) && Number(value) > 0)
-                  ) {
-                    if (Number(value) > 5) {
-                      value = "5";
-                    }
-                    setNumQuestions(value);
-                  }
-                }}
-              />
-            </div>
-            <div className="flex flex-row justify-center items-center">
-              <h3 className="text-sm font-medium ">Duration (mins):</h3>
-              <input
-                type="number"
-                step="1"
-                max="10"
-                min="1"
-                className="border-b-2 text-center focus:outline-none  border-gray-500 w-14 px-2 py-0.5 ml-3"
-                value={duration}
-                onChange={(e) => {
-                  let value = e.target.value;
-                  if (
-                    value === "" ||
-                    (Number.isInteger(Number(value)) && Number(value) > 0)
-                  ) {
-                    if (Number(value) > 10) {
-                      value = "10";
-                    }
-                    setDuration(value);
-                  }
-                }}
-              />
-            </div>
+            <p className="text-xs text-gray-500 ml-2">
+              Not: Eğer anonim ise, görüşmecinin e-posta ve adı toplanmayacak.
+            </p>
           </div>
-          <div className="flex flex-row w-full justify-center items-center space-x-24 mt-5">
+          <div className="flex flex-row justify-center items-center mt-3">
+            <h3 className="text-sm font-medium">Soru Sayısı:</h3>
+            <input
+              type="number"
+              className="border-b-2 focus:outline-none border-gray-500 px-2 w-20 py-0.5 ml-3"
+              placeholder="örn. 5"
+              value={numQuestions}
+              onChange={(e) => setNumQuestions(e.target.value)}
+            />
+            <h3 className="text-sm font-medium ml-8">Süre (dk):</h3>
+            <input
+              type="number"
+              className="border-b-2 focus:outline-none border-gray-500 px-2 w-20 py-0.5 ml-3"
+              placeholder="örn. 30"
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-row justify-center items-center mt-8 mb-4 space-x-4">
             <Button
-              disabled={
-                (name &&
-                objective &&
-                numQuestions &&
-                duration &&
-                selectedInterviewer != BigInt(0)
-                  ? false
-                  : true) || isClicked
-              }
-              className="bg-indigo-600 hover:bg-indigo-800  w-40"
+              className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
               onClick={() => {
-                setIsClicked(true);
-                onGenrateQuestions();
+                if (!isClicked) {
+                  setIsClicked(true);
+                  onGenrateQuestions();
+                }
               }}
+              disabled={
+                !name ||
+                selectedInterviewer === BigInt(0) ||
+                !objective ||
+                !numQuestions ||
+                !duration ||
+                isClicked
+              }
             >
-              Generate Questions
+              Soruları Oluştur
             </Button>
             <Button
-              disabled={
-                (name &&
-                objective &&
-                numQuestions &&
-                duration &&
-                selectedInterviewer != BigInt(0)
-                  ? false
-                  : true) || isClicked
-              }
-              className="bg-indigo-600 w-40 hover:bg-indigo-800"
+              className="bg-indigo-100 text-indigo-600 px-4 py-2 rounded-md hover:bg-indigo-200"
               onClick={() => {
-                setIsClicked(true);
-                onManual();
+                if (!isClicked) {
+                  setIsClicked(true);
+                  onManual();
+                }
               }}
+              disabled={
+                !name ||
+                selectedInterviewer === BigInt(0) ||
+                !objective ||
+                !numQuestions ||
+                !duration ||
+                isClicked
+              }
             >
-              I&apos;ll do it myself
+              Kendim Gireceğim
             </Button>
           </div>
         </div>
       </div>
-      <Modal
-        open={openInterviewerDetails}
-        closeOnOutsideClick={true}
-        onClose={() => {
-          setOpenInterviewerDetails(false);
-        }}
-      >
-        <InterviewerDetailsModal interviewer={interviewerDetails} />
-      </Modal>
+      {openInterviewerDetails && interviewerDetails && (
+        <Modal
+          open={openInterviewerDetails}
+          onClose={() => setOpenInterviewerDetails(false)}
+        >
+          <InterviewerDetailsModal interviewer={interviewerDetails} />
+        </Modal>
+      )}
     </>
   );
 }

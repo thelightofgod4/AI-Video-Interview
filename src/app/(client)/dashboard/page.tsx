@@ -107,10 +107,10 @@ function Interviews() {
     <main className="p-8 pt-0 ml-12 mr-auto rounded-md">
       <div className="flex flex-col items-left">
         <h2 className="mr-2 text-2xl font-semibold tracking-tight mt-8">
-          My Interviews
+          Görüşmelerim
         </h2>
         <h3 className=" text-sm tracking-tight text-gray-600 font-medium ">
-          Start getting responses now!
+          Hemen yanıt almaya başlayın!
         </h3>
         <div className="relative flex items-center mt-1 flex-wrap">
           {currentPlan == "free_trial_over" ? (
@@ -120,7 +120,7 @@ function Interviews() {
                   <Plus size={90} strokeWidth={0.5} className="text-gray-700" />
                 </div>
                 <CardTitle className="p-0 text-md text-center">
-                  You cannot create any more interviews unless you upgrade
+                  Yükseltme yapmadan yeni görüşme oluşturamazsınız
                 </CardTitle>
               </CardContent>
             </Card>
@@ -138,17 +138,16 @@ function Interviews() {
                       <Gem />
                     </div>
                     <h3 className="text-xl font-semibold text-center">
-                      Upgrade to Pro
+                      Pro Sürüme Yükseltin
                     </h3>
                     <p className="text-l text-center">
-                      You have reached your limit for the free trial. Please
-                      upgrade to pro to continue using our features.
+                      Ücretsiz deneme süreniz doldu. Özelliklerimizi kullanmaya devam etmek için lütfen pro sürüme yükseltin.
                     </p>
                     <div className="grid grid-cols-2 gap-2">
                       <div className="flex justify-center items-center">
                         <Image
                           src={"/premium-plan-icon.png"}
-                          alt="Graphic"
+                          alt="Grafik"
                           width={299}
                           height={300}
                         />
@@ -156,27 +155,27 @@ function Interviews() {
 
                       <div className="grid grid-rows-2 gap-2">
                         <div className="p-4 border rounded-lg">
-                          <h4 className="text-lg font-medium">Free Plan</h4>
+                          <h4 className="text-lg font-medium">Ücretsiz Plan</h4>
                           <ul className="list-disc pl-5 mt-2">
-                            <li>10 Responses</li>
-                            <li>Basic Support</li>
-                            <li>Limited Features</li>
+                            <li>10 Yanıt</li>
+                            <li>Temel Destek</li>
+                            <li>Sınırlı Özellikler</li>
                           </ul>
                         </div>
                         <div className="p-4 border rounded-lg">
                           <h4 className="text-lg font-medium">Pro Plan</h4>
                           <ul className="list-disc pl-5 mt-2">
-                            <li>Flexible Pay-Per-Response</li>
-                            <li>Priority Support</li>
-                            <li>All Features</li>
+                            <li>Esnek Yanıt Başına Ödeme</li>
+                            <li>Öncelikli Destek</li>
+                            <li>Tüm Özellikler</li>
                           </ul>
                         </div>
                       </div>
                     </div>
                     <p className="text-l text-center">
-                      Contact{" "}
+                      Planınızı yükseltmek için{" "}
                       <span className="font-semibold">founders@folo-up.co</span>{" "}
-                      to upgrade your plan.
+                      adresine mail atın.
                     </p>
                   </div>
                 </Modal>

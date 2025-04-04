@@ -8,36 +8,56 @@ import { logger } from "@/lib/logger";
 
 export const maxDuration = 60;
 
+type Language = "en" | "tr";
+
 export async function POST(req: Request, res: Response) {
   logger.info("generate-interview-questions request received");
-  const body = await req.json();
-
-  const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-    maxRetries: 5,
-    dangerouslyAllowBrowser: true,
-  });
-
+  
   try {
+    const body = await req.json();
+    logger.info("Request body:", body);
+
+    if (!process.env.OPENAI_API_KEY) {
+      throw new Error("OpenAI API key is not configured");
+    }
+
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+      maxRetries: 5,
+      dangerouslyAllowBrowser: true,
+    });
+
+    const lang = (body.language || "en") as Language;
+    logger.info("Using language:", lang);
+
+    const prompt = generateQuestionsPrompt(body);
+    logger.info("Generated prompt:", prompt);
+
     const baseCompletion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         {
           role: "system",
-          content: SYSTEM_PROMPT,
+          content: SYSTEM_PROMPT[lang],
         },
         {
           role: "user",
-          content: generateQuestionsPrompt(body),
+          content: prompt,
         },
       ],
       response_format: { type: "json_object" },
+      temperature: 0.7,
     });
 
     const basePromptOutput = baseCompletion.choices[0] || {};
     const content = basePromptOutput.message?.content;
 
+    if (!content) {
+      throw new Error("No content generated from OpenAI");
+    }
+
     logger.info("Interview questions generated successfully");
+    logger.info("Generated content:", content);
 
     return NextResponse.json(
       {
@@ -46,10 +66,12 @@ export async function POST(req: Request, res: Response) {
       { status: 200 },
     );
   } catch (error) {
-    logger.error("Error generating interview questions");
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    logger.error("Error generating interview questions:", errorMessage);
+    logger.error("Full error:", JSON.stringify(error, null, 2));
 
     return NextResponse.json(
-      { error: "internal server error" },
+      { error: errorMessage },
       { status: 500 },
     );
   }

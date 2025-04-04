@@ -11,9 +11,18 @@ export async function POST(req: Request, res: Response) {
     const url = `${base_url}/call/${url_id}`;
     const body = await req.json();
 
-    logger.info("create-interview request received");
+    logger.info("create-interview request received", { body });
 
     const payload = body.interviewData;
+
+    // Validate required fields
+    if (!payload.user_id || !payload.organization_id) {
+      logger.error("Missing user_id or organization_id");
+      return NextResponse.json(
+        { error: "User or organization ID is missing" },
+        { status: 400 }
+      );
+    }
 
     let readableSlug = null;
     if (body.organizationName) {
@@ -31,18 +40,17 @@ export async function POST(req: Request, res: Response) {
       readable_slug: readableSlug,
     });
 
-    logger.info("Interview created successfully");
+    logger.info("Interview created successfully", { newInterview });
 
     return NextResponse.json(
-      { response: "Interview created successfully" },
-      { status: 200 },
+      { response: "Interview created successfully", interview: newInterview },
+      { status: 200 }
     );
-  } catch (err) {
-    logger.error("Error creating interview");
-
+  } catch (error: any) {
+    logger.error("Error creating interview", { error: error?.message || error });
     return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
+      { error: "Internal server error", details: error?.message || "Unknown error" },
+      { status: 500 }
     );
   }
 }

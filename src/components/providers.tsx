@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { type ThemeProviderProps } from "next-themes/dist/types";
 import compose from "@/lib/compose";
@@ -10,9 +10,26 @@ import { ResponseProvider } from "@/contexts/responses.context";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ClientProvider } from "@/contexts/clients.context";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false,
+    },
+  },
+});
 
-const providers = ({ children }: ThemeProviderProps) => {
+const Providers = ({ children }: ThemeProviderProps) => {
+  const [isMounted, setIsMounted] = useState(false);
+  
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
+
   const Provider = compose([
     InterviewProvider,
     InterviewerProvider,
@@ -29,4 +46,4 @@ const providers = ({ children }: ThemeProviderProps) => {
   );
 };
 
-export default providers;
+export default React.memo(Providers);

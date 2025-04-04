@@ -9,6 +9,7 @@ import QuestionCard from "@/components/dashboard/interview/create-popup/question
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { ChevronLeft } from "lucide-react";
+import { toast } from "sonner";
 
 interface Props {
   interviewData: InterviewBase;
@@ -66,29 +67,72 @@ function QuestionsPopup({ interviewData, setProceed, setOpen }: Props) {
 
   const onSave = async () => {
     try {
-      interviewData.user_id = user?.id || "";
-      interviewData.organization_id = organization?.id || "";
+      if (!user?.id || !organization?.id) {
+        toast.error("User or organization ID is missing");
+        return;
+      }
 
-      interviewData.questions = questions;
-      interviewData.description = description;
+      // Generate a unique ID for the interview
+      const id = crypto.randomUUID();
 
-      // Convert BigInts to strings if necessary
-      const sanitizedInterviewData = {
-        ...interviewData,
-        interviewer_id: interviewData.interviewer_id.toString(),
-        response_count: interviewData.response_count.toString(),
+      // Prepare the complete interview data
+      const completeInterviewData = {
+        id,
+        user_id: user.id,
+        organization_id: organization.id,
+        name: interviewData.name,
+        objective: interviewData.objective,
+        description: description,
+        questions: questions,
+        interviewer_id: Number(interviewData.interviewer_id.toString()),
+        question_count: questions.length,
+        time_duration: interviewData.time_duration,
+        is_anonymous: interviewData.is_anonymous,
+        response_count: 0,
+        is_active: true,
+        is_archived: false,
         logo_url: organization?.imageUrl || "",
+        theme_color: "",
+        quotes: [],
+        insights: [],
+        respondents: [],
+        created_at: new Date().toISOString()
       };
 
-      const response = await axios.post("/api/create-interview", {
-        organizationName: organization?.name,
-        interviewData: sanitizedInterviewData,
+      // Log the data being sent
+      console.log("Sending interview data:", {
+        interviewData: completeInterviewData,
+        organizationName: organization.name
       });
-      setIsClicked(false);
-      fetchInterviews();
+
+      const response = await fetch("/api/create-interview", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          interviewData: completeInterviewData,
+          organizationName: organization.name
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to create interview");
+      }
+
+      const data = await response.json();
+      console.log("Interview created successfully:", data);
+
+      // Refresh interviews list
+      await fetchInterviews();
+
+      toast.success("Interview created successfully");
+      setProceed(true);
       setOpen(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating interview:", error);
+      toast.error(error?.message || "Failed to create interview");
     }
   };
 
@@ -169,7 +213,21 @@ function QuestionsPopup({ interviewData, setProceed, setOpen }: Props) {
         }}
       />
       <div className="flex flex-row justify-end items-end w-full">
+        <div className="text-xs text-gray-500 mr-2">
+          Debug info:
+          <br />
+          isClicked: {isClicked.toString()}
+          <br />
+          questions.length: {questions.length}
+          <br />
+          question_count: {interviewData.question_count}
+          <br />
+          description empty: {(description.trim() === "").toString()}
+          <br />
+          has empty questions: {questions.some((q) => q.question.trim() === "").toString()}
+        </div>
         <Button
+          type="button"
           disabled={
             isClicked ||
             questions.length < interviewData.question_count ||
@@ -177,9 +235,25 @@ function QuestionsPopup({ interviewData, setProceed, setOpen }: Props) {
             questions.some((question) => question.question.trim() === "")
           }
           className="bg-indigo-600 hover:bg-indigo-800 mr-5 mt-2"
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
+            console.log("Save button clicked - starting save process");
+            
+            // Log the interview data before saving
+            console.log("Interview data:", {
+              user: user?.id,
+              organization: organization?.id,
+              name: interviewData.name,
+              objective: interviewData.objective,
+              questions,
+              description
+            });
+
             setIsClicked(true);
-            onSave();
+            onSave().catch((error) => {
+              console.error("Error in save process:", error);
+              setIsClicked(false);
+            });
           }}
         >
           Save

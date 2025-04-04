@@ -9,16 +9,17 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "sonner";
 import SideMenu from "@/components/sideMenu";
 import { usePathname } from "next/navigation";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const metadata = {
-  title: "FoloUp",
-  description: " AI-powered Interviews",
+  title: "AI Video Interview",
+  description: "AI-powered Video Interviews",
   openGraph: {
-    title: "FoloUp",
-    description: "AI-powered Interviews",
-    siteName: "FoloUp",
+    title: "AI Video Interview",
+    description: "AI-powered Video Interviews",
+    siteName: "AI Video Interview",
     images: [
       {
         url: "/foloup.png",
@@ -41,8 +42,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <title>{metadata.title}</title>
-        <meta name="description" content={metadata.description} />
+        <title>AI Video Interview</title>
+        <meta name="description" content="AI-powered Video Interviews" />
         <link rel="icon" href="/browser-client-icon.ico" />
       </head>
       <body
@@ -52,19 +53,24 @@ export default function RootLayout({
         )}
       >
         <ClerkProvider
-          signInFallbackRedirectUrl={"/dashboard"}
-          afterSignOutUrl={"/sign-in"}
+          signInUrl="/sign-in"
+          signUpUrl="/sign-up"
+          afterSignInUrl="/dashboard"
+          afterSignUpUrl="/dashboard"
+          afterSignOutUrl="/sign-in"
         >
           <Providers>
-            {!pathname.includes("/sign-in") &&
-              !pathname.includes("/sign-up") && <Navbar />}
-            <div className="flex flex-row h-screen">
+            <Suspense fallback={null}>
               {!pathname.includes("/sign-in") &&
-                !pathname.includes("/sign-up") && <SideMenu />}
-              <div className="ml-[200px] pt-[64px] h-full overflow-y-auto flex-grow">
-                {children}
+                !pathname.includes("/sign-up") && <Navbar />}
+              <div className="flex flex-row h-screen">
+                {!pathname.includes("/sign-in") &&
+                  !pathname.includes("/sign-up") && <SideMenu />}
+                <div className="ml-[200px] pt-[64px] h-full overflow-y-auto flex-grow">
+                  {children}
+                </div>
               </div>
-            </div>
+            </Suspense>
             <Toaster
               toastOptions={{
                 classNames: {

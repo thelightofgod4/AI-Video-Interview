@@ -94,15 +94,15 @@ function Call({ interview }: InterviewProps) {
       });
 
       if (result) {
-        toast.success("Thank you for your feedback!");
+        toast.success("Teşekkür ederiz!");
         setIsFeedbackSubmitted(true);
         setIsDialogOpen(false);
       } else {
-        toast.error("Failed to submit feedback. Please try again.");
+        toast.error("Geri bildirim göndermek için lütfen tekrar deneyin.");
       }
     } catch (error) {
-      console.error("Error submitting feedback:", error);
-      toast.error("An error occurred. Please try again later.");
+      console.error("Geri bildirim göndermek için bir hata oluştu:", error);
+      toast.error("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
     }
   };
 
@@ -137,12 +137,12 @@ function Call({ interview }: InterviewProps) {
 
   useEffect(() => {
     webClient.on("call_started", () => {
-      console.log("Call started");
+      console.log("Görüşme başladı");
       setIsCalling(true);
     });
 
     webClient.on("call_ended", () => {
-      console.log("Call ended");
+      console.log("Görüşme sonlandı");
       setIsCalling(false);
       setIsEnded(true);
     });
@@ -157,7 +157,7 @@ function Call({ interview }: InterviewProps) {
     });
 
     webClient.on("error", (error) => {
-      console.error("An error occurred:", error);
+      console.error("Bir hata oluştu:", error);
       webClient.stopCall();
       setIsEnded(true);
       setIsCalling(false);
@@ -206,11 +206,32 @@ function Call({ interview }: InterviewProps) {
     const oldUserEmails: string[] = (
       await ResponseService.getAllEmails(interview.id)
     ).map((item) => item.email);
-    const OldUser =
-      oldUserEmails.includes(email) ||
-      (interview?.respondents && !interview?.respondents.includes(email));
+    
+    // Debug logs
+    console.log("Eligibility Check Debug:", {
+      email,
+      respondents: interview?.respondents,
+      isArray: Array.isArray(interview?.respondents),
+      hasLength: interview?.respondents?.length > 0,
+      oldUserEmails,
+      hasResponded: oldUserEmails.includes(email)
+    });
+    
+    // Check if user has already responded
+    const hasResponded = oldUserEmails.includes(email);
+    
+    // Check if there's a restricted respondents list and if user is not in it
+    const isNotAllowed = Array.isArray(interview?.respondents) && 
+                        interview.respondents.length > 0 && 
+                        !interview.respondents.includes(email);
 
-    if (OldUser) {
+    console.log("Final Check:", {
+      hasResponded,
+      isNotAllowed,
+      willBeBlocked: hasResponded || isNotAllowed
+    });
+
+    if (hasResponded || isNotAllowed) {
       setIsOldUser(true);
     } else {
       const registerCallResponse: registerCallResponseType = await axios.post(
@@ -236,7 +257,7 @@ function Call({ interview }: InterviewProps) {
           name: name,
         });
       } else {
-        console.log("Failed to register call");
+        console.log("Görüşme kaydı için başarısız");
       }
     }
 
@@ -307,14 +328,14 @@ function Call({ interview }: InterviewProps) {
                     style={{ color: interview.theme_color }}
                   />
                   <div className="text-sm font-normal">
-                    Expected duration:{" "}
+                    Tahmini süre:{" "}
                     <span
                       className="font-bold"
                       style={{ color: interview.theme_color }}
                     >
-                      {interviewTimeDuration} mins{" "}
+                      {interviewTimeDuration} dakika{" "}
                     </span>
-                    or less
+                    veya daha az
                   </div>
                 </div>
               )}
@@ -336,10 +357,9 @@ function Call({ interview }: InterviewProps) {
                   <div className="p-2 font-normal text-sm mb-4 whitespace-pre-line">
                     {interview?.description}
                     <p className="font-bold text-sm">
-                      {"\n"}Ensure your volume is up and grant microphone access
-                      when prompted. Additionally, please make sure you are in a
-                      quiet environment.
-                      {"\n\n"}Note: Tab switching will be recorded.
+                      {"\n"}Lütfen ses seviyenizin açık olduğundan ve mikrofon izni verdiğinizden emin olun. 
+                      Ayrıca, sessiz bir ortamda olduğunuzdan emin olun.
+                      {"\n\n"}Not: Sekme değiştirme işlemleri kaydedilecektir.
                     </p>
                   </div>
                   {!interview?.is_anonymous && (
@@ -348,7 +368,7 @@ function Call({ interview }: InterviewProps) {
                         <input
                           value={email}
                           className="h-fit mx-auto py-2 border-2 rounded-md w-[75%] self-center px-2 border-gray-400 text-sm font-normal"
-                          placeholder="Enter your email address"
+                          placeholder="E-posta adresinizi girin"
                           onChange={(e) => setEmail(e.target.value)}
                         />
                       </div>
@@ -356,7 +376,7 @@ function Call({ interview }: InterviewProps) {
                         <input
                           value={name}
                           className="h-fit mb-4 mx-auto py-2 border-2 rounded-md w-[75%] self-center px-2 border-gray-400 text-sm font-normal"
-                          placeholder="Enter your first name"
+                          placeholder="Adınızı girin"
                           onChange={(e) => setName(e.target.value)}
                         />
                       </div>
@@ -378,7 +398,7 @@ function Call({ interview }: InterviewProps) {
                     }
                     onClick={startConversation}
                   >
-                    {!Loading ? "Start Interview" : <MiniLoader />}
+                    {!Loading ? "Görüşmeyi Başlat" : <MiniLoader />}
                   </Button>
                   <AlertDialog>
                     <AlertDialogTrigger>
@@ -387,22 +407,22 @@ function Call({ interview }: InterviewProps) {
                         style={{ borderColor: interview.theme_color }}
                         disabled={Loading}
                       >
-                        Exit
+                        Çıkış
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogTitle>Emin misiniz?</AlertDialogTitle>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogCancel>İptal</AlertDialogCancel>
                         <AlertDialogAction
                           className="bg-indigo-600 hover:bg-indigo-800"
                           onClick={async () => {
                             await onEndCallClick();
                           }}
                         >
-                          Continue
+                          Devam Et
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
@@ -422,7 +442,7 @@ function Call({ interview }: InterviewProps) {
                     <div className="flex flex-col mx-auto justify-center items-center align-middle">
                       <Image
                         src={interviewerImg}
-                        alt="Image of the interviewer"
+                        alt="Görüşmeci resmi"
                         width={120}
                         height={120}
                         className={`object-cover object-center mx-auto my-auto ${
@@ -431,7 +451,7 @@ function Call({ interview }: InterviewProps) {
                             : ""
                         }`}
                       />
-                      <div className="font-semibold">Interviewer</div>
+                      <div className="font-semibold">Görüşmeci</div>
                     </div>
                   </div>
                 </div>
@@ -446,7 +466,7 @@ function Call({ interview }: InterviewProps) {
                   <div className="flex flex-col mx-auto justify-center items-center align-middle">
                     <Image
                       src={`/user-icon.png`}
-                      alt="Picture of the user"
+                      alt="Kullanıcı resmi"
                       width={120}
                       height={120}
                       className={`object-cover object-center mx-auto my-auto ${
@@ -455,7 +475,7 @@ function Call({ interview }: InterviewProps) {
                           : ""
                       }`}
                     />
-                    <div className="font-semibold">You</div>
+                    <div className="font-semibold">Siz</div>
                   </div>
                 </div>
               </div>
@@ -468,27 +488,26 @@ function Call({ interview }: InterviewProps) {
                       className=" bg-white text-black border  border-indigo-600 h-10 mx-auto flex flex-row justify-center mb-8"
                       disabled={Loading}
                     >
-                      End Interview{" "}
+                      Görüşmeyi Bitir{" "}
                       <XCircleIcon className="h-[1.5rem] ml-2 w-[1.5rem] rotate-0 scale-100  dark:-rotate-90 dark:scale-0 text-red" />
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                      <AlertDialogTitle>Emin misiniz?</AlertDialogTitle>
                       <AlertDialogDescription>
-                        This action cannot be undone. This action will end the
-                        call.
+                        Bu işlem geri alınamaz. Bu işlem görüşmeyi sonlandıracak.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogCancel>İptal</AlertDialogCancel>
                       <AlertDialogAction
                         className="bg-indigo-600 hover:bg-indigo-800"
                         onClick={async () => {
                           await onEndCallClick();
                         }}
                       >
-                        Continue
+                        Devam Et
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
@@ -503,12 +522,12 @@ function Call({ interview }: InterviewProps) {
                     <CheckCircleIcon className="h-[2rem] w-[2rem] mx-auto my-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-indigo-500 " />
                     <p className="text-lg font-semibold text-center">
                       {isStarted
-                        ? `Thank you for taking the time to participate in this interview`
-                        : "Thank you very much for considering."}
+                        ? `Bu görüşmeye katıldığınız için teşekkür ederiz`
+                        : "İlginiz için teşekkür ederiz."}
                     </p>
                     <p className="text-center">
                       {"\n"}
-                      You can close this tab now.
+                      Bu sekmeyi kapatabilirsiniz.
                     </p>
                   </div>
 
@@ -522,7 +541,7 @@ function Call({ interview }: InterviewProps) {
                           className="bg-indigo-600 text-white h-10 mt-4 mb-4"
                           onClick={() => setIsDialogOpen(true)}
                         >
-                          Provide Feedback
+                          Geri Bildirim Ver
                         </Button>
                       </AlertDialogTrigger>
                       <AlertDialogContent>
@@ -542,12 +561,11 @@ function Call({ interview }: InterviewProps) {
                   <div className="p-2 font-normal text-base mb-4 whitespace-pre-line">
                     <CheckCircleIcon className="h-[2rem] w-[2rem] mx-auto my-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-indigo-500 " />
                     <p className="text-lg font-semibold text-center">
-                      You have already responded in this interview or you are
-                      not eligible to respond. Thank you!
+                      Bu görüşmeye daha önce katıldınız veya katılma yetkiniz bulunmuyor. Teşekkürler!
                     </p>
                     <p className="text-center">
                       {"\n"}
-                      You can close this tab now.
+                      Bu sekmeyi kapatabilirsiniz.
                     </p>
                   </div>
                 </div>
@@ -561,7 +579,7 @@ function Call({ interview }: InterviewProps) {
           target="_blank"
         >
           <div className="text-center text-md font-semibold mr-2  ">
-            Powered by{" "}
+            Destekleyen{" "}
             <span className="font-bold">
               Folo<span className="text-indigo-600">Up</span>
             </span>

@@ -49,12 +49,40 @@ export async function GET(res: NextRequest) {
       ...INTERVIEWERS.BOB,
     });
 
+    // Create Ayşe
+    const newThirdAgent = await retellClient.agent.create({
+      response_engine: { llm_id: newModel.llm_id, type: "retell-llm" },
+      voice_id: "custom_voice_364370f6601bf695fb194ac3a6",
+      agent_name: "Ayse",
+      language: "tr-TR",
+    });
+
+    const newThirdInterviewer = await InterviewerService.createInterviewer({
+      agent_id: newThirdAgent.agent_id,
+      ...INTERVIEWERS.AYSE,
+    });
+
+    // Create Ahmet
+    const newFourthAgent = await retellClient.agent.create({
+      response_engine: { llm_id: newModel.llm_id, type: "retell-llm" },
+      voice_id: "custom_voice_9f9fa5457fc93c34e53c76396c",
+      agent_name: "Ahmet",
+      language: "tr-TR",
+    });
+
+    const newFourthInterviewer = await InterviewerService.createInterviewer({
+      agent_id: newFourthAgent.agent_id,
+      ...INTERVIEWERS.AHMET,
+    });
+
     logger.info("");
 
     return NextResponse.json(
       {
         newInterviewer,
         newSecondInterviewer,
+        newThirdInterviewer,
+        newFourthInterviewer,
       },
       { status: 200 },
     );

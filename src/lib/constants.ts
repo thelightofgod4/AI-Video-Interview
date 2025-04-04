@@ -40,4 +40,26 @@ export const INTERVIEWERS = {
       "Hi! I'm Bob, your go-to empathetic interviewer. I excel at understanding and connecting with people on a deeper level, ensuring every conversation is insightful and meaningful. With a focus on empathy, I'm here to listen and learn from you. Let's create a genuine connection!",
     audio: "Bob.wav",
   },
+  AYSE: {
+    name: "Keşifçi Ayşe",
+    rapport: 7,
+    exploration: 10,
+    empathy: 7,
+    speed: 5,
+    image: "/interviewers/Lisa.png",
+    description:
+      "Merhaba! Ben Ayşe, keşfetmeyi seven, coşkulu ve empatik bir görüşmeciyim. Empati ve uyum dengesini mükemmel bir şekilde koruyarak, sabit bir tempoda derinlemesine konuşmalar yapıyorum. Hadi birlikte bu yolculuğa çıkalım ve anlamlı içgörüler keşfedelim!",
+    audio: "Ayse.wav",
+  },
+  AHMET: {
+    name: "Empatik Ahmet",
+    rapport: 7,
+    exploration: 7,
+    empathy: 10,
+    speed: 5,
+    image: "/interviewers/Bob.png",
+    description:
+      "Merhaba! Ben Ahmet, empatik görüşmeleriniz için buradayım. İnsanlarla daha derin bir seviyede bağ kurma ve anlama konusunda uzmanım, her konuşmanın içgörülü ve anlamlı olmasını sağlıyorum. Empati odaklı yaklaşımımla, sizi dinlemek ve sizden öğrenmek için buradayım. Hadi gerçek bir bağ kuralım!",
+    audio: "Ahmet.wav",
+  },
 };

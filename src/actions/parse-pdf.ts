@@ -1,6 +1,7 @@
 "use server";
 
-import { PDFLoader } from "langchain/document_loaders/fs/pdf";
+import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
+import { Document } from "@langchain/core/documents";
 
 export async function parsePdf(formData: FormData) {
   try {
@@ -12,7 +13,7 @@ export async function parsePdf(formData: FormData) {
 
     const loader = new PDFLoader(file);
     const docs = await loader.load();
-    const fullText = docs.map((doc) => doc.pageContent).join("\n");
+    const fullText = docs.map((doc: Document) => doc.pageContent).join("\n");
 
     return {
       success: true,

@@ -117,8 +117,8 @@ function InterviewInterface({ params }: Props) {
         {!interview ? (
           interviewNotFound ? (
             <PopUpMessage
-              title="Invalid URL"
-              description="The interview link you're trying to access is invalid. Please check the URL and try again."
+              title="Geçersiz URL"
+              description="Erişmeye çalıştığınız görüşme linki geçersiz. Lütfen URL'i kontrol edip tekrar deneyin."
               image="/invalid-url.png"
             />
           ) : (
@@ -126,8 +126,8 @@ function InterviewInterface({ params }: Props) {
           )
         ) : !isActive ? (
           <PopUpMessage
-            title="Interview Is Unavailable"
-            description="We are not currently accepting responses. Please contact the sender for more information."
+            title="Görüşme Kullanılamıyor"
+            description="Şu anda yanıt kabul etmiyoruz. Daha fazla bilgi için lütfen gönderen kişiyle iletişime geçin."
             image="/closed.png"
           />
         ) : (
@@ -140,12 +140,11 @@ function InterviewInterface({ params }: Props) {
             {interview?.name}
           </p>
           <p className="text-center text-gray-600 my-5">
-            Please use a PC to respond to the interview. Apologies for any
-            inconvenience caused.{" "}
+            Lütfen görüşmeye katılmak için bir bilgisayar kullanın. Oluşan rahatsızlık için özür dileriz.{" "}
           </p>
         </div>
         <div className="text-center text-md font-semibold mr-2 my-5">
-          Powered by{" "}
+          Destekleyen{" "}
           <a
             className="font-bold underline"
             href="www.folo-up.co"
