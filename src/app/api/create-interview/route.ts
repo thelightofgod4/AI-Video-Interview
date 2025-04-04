@@ -18,6 +18,7 @@ export async function POST(req: Request, res: Response) {
     // Validate required fields
     if (!payload.user_id || !payload.organization_id) {
       logger.error("Missing user_id or organization_id");
+
       return NextResponse.json(
         { error: "User or organization ID is missing" },
         { status: 400 }
@@ -48,6 +49,7 @@ export async function POST(req: Request, res: Response) {
     );
   } catch (error: any) {
     logger.error("Error creating interview", { error: error?.message || error });
+
     return NextResponse.json(
       { error: "Internal server error", details: error?.message || "Unknown error" },
       { status: 500 }

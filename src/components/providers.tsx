@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { type ThemeProviderProps } from "next-themes/dist/types";
 import compose from "@/lib/compose";
@@ -19,16 +19,8 @@ const queryClient = new QueryClient({
   },
 });
 
-const Providers = ({ children }: ThemeProviderProps) => {
-  const [isMounted, setIsMounted] = useState(false);
-  
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (!isMounted) {
-    return null;
-  }
+function Providers(props: ThemeProviderProps) {
+  const { children } = props;
 
   const Provider = compose([
     InterviewProvider,
@@ -38,12 +30,15 @@ const Providers = ({ children }: ThemeProviderProps) => {
   ]);
 
   return (
-    <NextThemesProvider attribute="class" defaultTheme="light">
+    <NextThemesProvider
+      attribute="class"
+      defaultTheme="light"
+    >
       <QueryClientProvider client={queryClient}>
         <Provider>{children}</Provider>
       </QueryClientProvider>
     </NextThemesProvider>
   );
-};
+}
 
-export default React.memo(Providers);
+export default Providers;

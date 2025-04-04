@@ -266,6 +266,14 @@ function DetailsPopup({
           </div>
           <div className="flex flex-row justify-center items-center mt-8 mb-4 space-x-4">
             <Button
+              disabled={
+                !name ||
+                selectedInterviewer === BigInt(0) ||
+                !objective ||
+                !numQuestions ||
+                !duration ||
+                isClicked
+              }
               className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
               onClick={() => {
                 if (!isClicked) {
@@ -273,6 +281,10 @@ function DetailsPopup({
                   onGenrateQuestions();
                 }
               }}
+            >
+              Soruları Oluştur
+            </Button>
+            <Button
               disabled={
                 !name ||
                 selectedInterviewer === BigInt(0) ||
@@ -281,10 +293,6 @@ function DetailsPopup({
                 !duration ||
                 isClicked
               }
-            >
-              Soruları Oluştur
-            </Button>
-            <Button
               className="bg-indigo-100 text-indigo-600 px-4 py-2 rounded-md hover:bg-indigo-200"
               onClick={() => {
                 if (!isClicked) {
@@ -292,14 +300,6 @@ function DetailsPopup({
                   onManual();
                 }
               }}
-              disabled={
-                !name ||
-                selectedInterviewer === BigInt(0) ||
-                !objective ||
-                !numQuestions ||
-                !duration ||
-                isClicked
-              }
             >
               Kendim Gireceğim
             </Button>
