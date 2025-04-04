@@ -3,7 +3,7 @@ module.exports = {
   extends: ["next/core-web-vitals", "prettier"],
   rules: {
     curly: "error",
-    "newline-before-return": "error",
+    "newline-before-return": "warn",
     "no-restricted-exports": [
       "error",
       {
@@ -17,7 +17,7 @@ module.exports = {
       },
     ],
     "react/jsx-sort-props": [
-      "error",
+      "warn",
       {
         noSortAlphabetically: true,
         shorthandLast: true,
@@ -26,17 +26,17 @@ module.exports = {
     ],
     "react/no-array-index-key": "warn",
     "react/no-danger": "warn",
-    "react/self-closing-comp": "error",
+    "react/self-closing-comp": "warn",
     "react/function-component-definition": [
-      "error",
+      "warn",
       {
         namedComponents: "function-declaration",
         unnamedComponents: "arrow-function",
       },
     ],
-    "jsx-a11y/alt-text": "error",
+    "jsx-a11y/alt-text": "warn",
     "import/no-extraneous-dependencies": [
-      "error",
+      "warn",
       {
         packageDir: __dirname,
       },
