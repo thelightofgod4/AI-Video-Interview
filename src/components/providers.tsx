@@ -19,9 +19,7 @@ const queryClient = new QueryClient({
   },
 });
 
-function Providers(props: ThemeProviderProps) {
-  const { children } = props;
-
+function Providers({ children }: ThemeProviderProps) {
   const Provider = compose([
     InterviewProvider,
     InterviewerProvider,

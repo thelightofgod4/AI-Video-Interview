@@ -266,6 +266,7 @@ function DetailsPopup({
           </div>
           <div className="flex flex-row justify-center items-center mt-8 mb-4 space-x-4">
             <Button
+              className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
               disabled={
                 !name ||
                 selectedInterviewer === BigInt(0) ||
@@ -274,7 +275,6 @@ function DetailsPopup({
                 !duration ||
                 isClicked
               }
-              className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
               onClick={() => {
                 if (!isClicked) {
                   setIsClicked(true);
@@ -285,6 +285,7 @@ function DetailsPopup({
               Soruları Oluştur
             </Button>
             <Button
+              className="bg-indigo-100 text-indigo-600 px-4 py-2 rounded-md hover:bg-indigo-200"
               disabled={
                 !name ||
                 selectedInterviewer === BigInt(0) ||
@@ -293,7 +294,6 @@ function DetailsPopup({
                 !duration ||
                 isClicked
               }
-              className="bg-indigo-100 text-indigo-600 px-4 py-2 rounded-md hover:bg-indigo-200"
               onClick={() => {
                 if (!isClicked) {
                   setIsClicked(true);

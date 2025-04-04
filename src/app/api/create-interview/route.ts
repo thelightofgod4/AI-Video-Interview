@@ -5,7 +5,7 @@ import { logger } from "@/lib/logger";
 
 const base_url = process.env.NEXT_PUBLIC_LIVE_URL;
 
-export async function POST(req: Request, res: Response) {
+export async function POST(req: Request) {
   try {
     const url_id = nanoid();
     const url = `${base_url}/call/${url_id}`;

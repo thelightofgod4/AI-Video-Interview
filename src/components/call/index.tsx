@@ -53,10 +53,10 @@ type registerCallResponseType = {
   };
 };
 
-type transcriptType = {
+interface Transcript {
   role: string;
   content: string;
-};
+}
 
 function Call({ interview }: InterviewProps) {
   const { createResponse } = useResponses();
@@ -163,12 +163,11 @@ function Call({ interview }: InterviewProps) {
       setIsCalling(false);
     });
 
-    webClient.on("update", (update) => {
-      if (update.transcript) {
-        const transcripts: transcriptType[] = update.transcript;
+    webClient.on("transcriptUpdate", (transcripts) => {
+      if (transcripts.length > 0) {
         const roleContents: { [key: string]: string } = {};
 
-        transcripts.forEach((transcript) => {
+        transcripts.forEach((transcript: Transcript) => {
           roleContents[transcript?.role] = transcript?.content;
         });
 
@@ -177,6 +176,7 @@ function Call({ interview }: InterviewProps) {
       }
       //TODO: highlight the newly uttered word in the UI
     });
+
     return () => {
       // Clean up event listeners
       webClient.removeAllListeners();
