@@ -14,15 +14,22 @@ export default authMiddleware({
   ],
   ignoredRoutes: [
     "/((?!.*\\..*|_next).*)",
-    "/",
     "/(api|trpc)(.*)"
   ],
   afterAuth(auth, req: NextRequest) {
     // Handle users who aren't authenticated
-    if (!auth.userId && !auth.isPublicRoute) {
-      const signInUrl = new URL('/sign-in', req.url);
-      signInUrl.searchParams.set('redirect_url', req.url);
-      return NextResponse.redirect(signInUrl);
+    if (!auth.userId) {
+      // If they're trying to access a protected route, redirect to sign-in
+      if (!auth.isPublicRoute) {
+        const signInUrl = new URL('/sign-in', req.url);
+        signInUrl.searchParams.set('redirect_url', req.url);
+        return NextResponse.redirect(signInUrl);
+      }
+      // If they're trying to access the root path, redirect to sign-in
+      if (req.nextUrl.pathname === '/') {
+        const signInUrl = new URL('/sign-in', req.url);
+        return NextResponse.redirect(signInUrl);
+      }
     }
   },
 });
