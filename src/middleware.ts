@@ -17,17 +17,21 @@ export default authMiddleware({
     "/(api|trpc)(.*)"
   ],
   afterAuth(auth, req: NextRequest) {
+    // If the user is on the root path
+    if (req.nextUrl.pathname === "/") {
+      // If not signed in, redirect to sign-in
+      if (!auth.userId) {
+        return NextResponse.redirect(new URL("/sign-in", req.url));
+      }
+      // If signed in, redirect to dashboard
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
     // Handle users who aren't authenticated
     if (!auth.userId) {
       // If they're trying to access a protected route, redirect to sign-in
       if (!auth.isPublicRoute) {
         const signInUrl = new URL('/sign-in', req.url);
         signInUrl.searchParams.set('redirect_url', req.url);
-        return NextResponse.redirect(signInUrl);
-      }
-      // If they're trying to access the root path, redirect to sign-in
-      if (req.nextUrl.pathname === '/') {
-        const signInUrl = new URL('/sign-in', req.url);
         return NextResponse.redirect(signInUrl);
       }
     }
