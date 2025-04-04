@@ -7,16 +7,10 @@ import { NextRequest } from "next/server";
 // See https://clerk.com/docs/references/nextjs/auth-middleware for more information about configuring your middleware
 export default authMiddleware({
   publicRoutes: [
-    "/",
     "/sign-in(.*)",
     "/sign-up(.*)",
-    "/interview(.*)",
-    "/call(.*)",
     "/api/register-call(.*)",
     "/api/get-call(.*)",
-    "/api/generate-interview-questions(.*)",
-    "/api/create-interviewer(.*)",
-    "/api/analyze-communication(.*)",
   ],
   ignoredRoutes: [
     "/((?!.*\\..*|_next).*)",
